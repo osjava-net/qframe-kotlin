@@ -1,7 +1,7 @@
 package net.osjava.qframe.web
 
-import com.mitchellbosecke.pebble.PebbleEngine
-import com.mitchellbosecke.pebble.loader.ServletLoader
+import io.pebbletemplates.pebble.PebbleEngine
+import io.pebbletemplates.pebble.loader.ServletLoader
 import net.osjava.qframe.core.AppConfig
 import net.osjava.qframe.core.Constants.CTX_TEMPLATE_EXT
 import net.osjava.qframe.core.Constants.DEFAULT_TEMPLATE_NAME

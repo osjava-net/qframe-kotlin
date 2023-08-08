@@ -16,9 +16,7 @@ object PathUtils {
         }
 
         for (item in subPaths) {
-            when (item.startsWith("/")) {
-                false -> builder.append("/")
-            }
+            if (!item.startsWith("/")) builder.append("/")
 
             when (item.endsWith("/")) {
                 true -> builder.append(item.substring(0, item.length - 1))
