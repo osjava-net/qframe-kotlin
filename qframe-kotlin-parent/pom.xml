@@ -216,17 +216,27 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.4.15.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jcache</artifactId>
-            <version>5.4.15.Final</version>
+            <version>6.2.7.Final</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.hibernate</groupId>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+            <version>6.2.7.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate.orm</groupId>
                     <artifactId>hibernate-core</artifactId>
                 </exclusion>
                 <exclusion>
@@ -245,20 +255,14 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>javax.cache</groupId>
-                    <artifactId>cache-api</artifactId>
+                    <groupId>jakarta.xml.bind</groupId>
+                    <artifactId>jakarta.xml.bind-api</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-runtime</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
-            <version>1.1.1</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -351,10 +355,6 @@
                         <plugin>spring</plugin>
                     </compilerPlugins>
                     <jvmTarget>${jdk.version}</jvmTarget>
-
-<!--                    <pluginOptions>-->
-<!--                        <option>no-arg:annotation=com.my.Annotation</option>-->
-<!--                    </pluginOptions>-->
                 </configuration>
 
                 <dependencies>
@@ -447,11 +447,128 @@
                 </dependencies>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <attach>true</attach>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.2.3</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <QFrame-Version>${qframe.version}</QFrame-Version>
+                                <App-Version>${project.version}</App-Version>
+                                <!--suppress UnresolvedMavenProperty -->
+                                <Build-Time>${app.build.time}</Build-Time>
+                                <App-Edition>${app.edition}</App-Edition>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>9.4.51.v20230217</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.amashchenko.maven.plugin</groupId>
+                    <artifactId>gitflow-maven-plugin</artifactId>
+                    <version>1.14.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9</version>
+                    <executions>
+                        <execution>
+                            <id>asciidoc</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>javadoc</goal>
+                            </goals>
+                            <configuration>
+                                <doclet>net.osjava.qframe.document.Asciidoc</doclet>
+                                <docletArtifact>
+                                    <groupId>net.osjava.qframe</groupId>
+                                    <artifactId>qframe-document</artifactId>
+                                    <version>${qframe.version}</version>
+                                </docletArtifact>
+                                <useStandardDocletOptions>false</useStandardDocletOptions>
+                                <encoding>UTF-8</encoding>
+                                <additionalparam>
+                                    --output-dir "${api.asciidoc.path}"
+                                </additionalparam>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.asciidoctor</groupId>
+                    <artifactId>asciidoctor-maven-plugin</artifactId>
+                    <version>2.2.3</version>
+                    <executions>
+                        <execution>
+                            <id>asciidoc-to-html</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>process-asciidoc</goal>
+                            </goals>
+                            <configuration>
+                                <backend>html</backend>
+                                <doctype>docbook</doctype>
+                                <attributes>
+                                    <source-highlighter>highlightjs</source-highlighter>
+                                    <toc>left</toc>
+                                    <linkcss>false</linkcss>
+                                    <sectnums>true</sectnums>
+                                    <icons>font</icons>
+                                    <appVersion>${project.version}</appVersion>
+                                    <nofooter/>
+                                </attributes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <sourceDirectory>${app.asciidoc.path}</sourceDirectory>
+                        <headerFooter>true</headerFooter>
+                        <outputDirectory>${app.docs.path}</outputDirectory>
+                        <preserveDirectories>true</preserveDirectories>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <properties>
         <kotlin.version>1.9.0</kotlin.version>
         <kotlinx.version>1.7.3</kotlinx.version>
         <spring.version>6.0.11</spring.version>
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>17</jdk.version>
+        <qframe.version>0.8.0-SNAPSHOT</qframe.version>
+        <app.edition>standard</app.edition>
+        <api.asciidoc.path>${project.basedir}/src/main/documents/_docs_</api.asciidoc.path>
+        <app.asciidoc.path>${project.basedir}/src/main/documents</app.asciidoc.path>
+        <app.docs.path>${project.build.directory}/pages</app.docs.path>
     </properties>
 </project>

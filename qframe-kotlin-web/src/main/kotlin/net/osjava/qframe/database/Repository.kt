@@ -1,11 +1,12 @@
 package net.osjava.qframe.database
 
+import jakarta.persistence.criteria.*
+import net.osjava.qframe.utils.ClassUtils
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.io.Serializable
-import javax.persistence.criteria.*
 import kotlin.reflect.KClass
 
 @Repository
@@ -13,7 +14,8 @@ class Repository(open val sessionFactory: SessionFactory) {
 
     @Transactional(readOnly = true)
     fun <T : Any> find(page: Page<T> = Page.default(),
-                       conditions: (CriteriaBuilder) -> CriteriaQuery<T>): MutableList<T> {
+                       conditions: (CriteriaBuilder) -> CriteriaQuery<T>
+    ): MutableList<T> {
         val query = conditions(getSession().criteriaBuilder)
 
         return getSession().createQuery(query).setFirstResult(page.offset).setMaxResults(page.size).resultList
@@ -91,17 +93,19 @@ class Repository(open val sessionFactory: SessionFactory) {
 
     @Transactional
     fun <T : IEntity> save(entity: T): Serializable {
-        return getSession().save(entity)
+        getSession().persist(entity)
+        getSession().flush()
+        return entity.uid()
     }
 
     @Transactional
     fun <T : IEntity> update(entity: T) {
-        getSession().update(entity)
+        getSession().merge(entity)
     }
 
     @Transactional
     fun <T : IEntity> delete(entity: T) {
-        getSession().delete(entity)
+        getSession().remove(entity)
     }
 
     @Transactional(readOnly = true)

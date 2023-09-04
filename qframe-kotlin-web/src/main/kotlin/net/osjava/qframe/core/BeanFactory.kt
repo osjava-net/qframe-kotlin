@@ -5,11 +5,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext
 import kotlin.reflect.KClass
 
 object BeanFactory {
-    private const val SPRING_CONTEXT = "classpath*:/META-INF/spring-beans.xml"
     private lateinit var applicationContext: ApplicationContext
 
-    internal fun initialize() {
-        applicationContext = ClassPathXmlApplicationContext(SPRING_CONTEXT)
+    internal fun initialize(contexts: List<String>) {
+        applicationContext = ClassPathXmlApplicationContext(*contexts.toTypedArray())
     }
 
     fun <T : Any> getBean(clazz: KClass<out T>): T? {

@@ -5,6 +5,7 @@ import net.osjava.qframe.utils.PathUtils
 import org.apache.logging.log4j.core.config.Configurator
 import java.util.*
 import java.util.logging.Logger
+import kotlin.collections.List
 
 abstract class AbstractApplication {
     private val log: Logger = Logger.getLogger("net.osjava.qframe.core.AbstractApplication")
@@ -16,7 +17,7 @@ abstract class AbstractApplication {
 
         AppConfig.initialize(appId, workspace, extraProperties)
 
-        BeanFactory.initialize()
+        BeanFactory.initialize(getSpringContexts())
 
         HttpUtils.initialize()
 
@@ -26,5 +27,9 @@ abstract class AbstractApplication {
     protected fun destroy() {
         HttpUtils.destroy()
         log.info("Destroy application ${AppConfig.appId}... DONE")
+    }
+
+    protected fun getSpringContexts():List<String> {
+        return listOf("classpath*:/META-INF/spring-beans.xml")
     }
 }

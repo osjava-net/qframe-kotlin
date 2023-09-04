@@ -63,7 +63,13 @@ object HttpUtils {
     fun postStream(url: String, content: String, contentType: ContentType = ContentType.APPLICATION_XHTML_XML,
                    timeout: Int = DEFAULT_TIMEOUT, headers: List<Header> = emptyList()): Response<String> {
         log.debug(
-            ">>> Request remote url by post stream: url=${url}, content=${content}, contentType=${contentType}, timeout=${timeout}, headers=${headers}")
+            ">>> Request remote url by post stream: url={}, content={}, contentType={}, timeout={}, headers={}",
+            url,
+            content,
+            contentType,
+            timeout,
+            headers
+        )
 
         val httpPost = HttpPost(url).apply {
             this.config = getRequestConfig(timeout)
@@ -78,7 +84,12 @@ object HttpUtils {
 
     fun postForm(url: String, timeout: Int, headers: List<Header>, vararg parameters: Parameter): Response<String> {
         log.debug(
-            ">>> Request url by form: url=${url}, parameters=${parameters}, timeout=${timeout}, headers=${headers}")
+            ">>> Request url by form: url={}, parameters={}, timeout={}, headers={}",
+            url,
+            parameters,
+            timeout,
+            headers
+        )
 
         val params = mutableListOf<NameValuePair>()
         for ((name, value) in parameters) {
@@ -98,7 +109,7 @@ object HttpUtils {
 
     fun request(url: String, timeout: Int = DEFAULT_TIMEOUT, headers: List<Header> = emptyList(),
                 vararg parameters: Parameter = emptyArray()): Response<String> {
-        log.debug(">>> Request url: url=${url}, parameters=${parameters}, timeout=${timeout}, headers=${headers}")
+        log.debug(">>> Request url: url={}, parameters={}, timeout={}, headers={}", url, parameters, timeout, headers)
 
         val uriBuilder = URIBuilder(url).apply {
             parameters.forEach { this.addParameter(it.name, it.value) }

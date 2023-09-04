@@ -36,7 +36,7 @@ interface AbstractAction {
         }
 
         return try {
-            log.debug(">>> Request action ${rc.getRequestURI()}: $rc")
+            log.debug(">>> Request action {}: {}", rc.getRequestURI(), rc)
             (method.invoke(this, rc) as IResult<*>).also {
                 log.debug("<<< Response from action ${rc.getRequestURI()}: ${it.data?.run { JsonUtils.toJson(this) }}")
             }
