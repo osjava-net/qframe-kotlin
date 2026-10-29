@@ -3,26 +3,18 @@ package net.osjava.qframe.web
 import com.google.gson.JsonElement
 import net.osjava.qframe.core.Constants.CTX_TEMPLATE_EXT
 import net.osjava.qframe.core.Constants.CTX_VIEW_SERVLET
-import net.osjava.qframe.utils.JsonUtils
 import net.osjava.qframe.utils.PathUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Controller
-import java.lang.RuntimeException
 import java.net.URLEncoder
-import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.extensionReceiverParameter
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.valueParameters
-import kotlin.reflect.jvm.javaConstructor
 import kotlin.reflect.jvm.javaMethod
-import kotlin.reflect.jvm.reflect
 
 abstract class IResult<T>(val data: T) {
     internal abstract fun execute(rc: RequestContext)
 
     companion object {
-        fun notion(): IResult<Any> = ResultNoting()
+        fun nothing(): IResult<Any> = ResultNothing()
 
         fun render(action: KFunction<IResult<ViewPath>>): IResult<ViewPath> = ResultAction(action)
 
@@ -44,7 +36,7 @@ internal class ResultAction(private val action: KFunction<IResult<ViewPath>>) : 
     }
 }
 
-internal class ResultNoting : IResult<Any>(Any()) {
+internal class ResultNothing : IResult<Any>(Any()) {
     override fun execute(rc: RequestContext) {}
 }
 
@@ -83,6 +75,9 @@ internal class ResultView(private val viewPath: ViewPath) : IResult<ViewPath>(vi
                 rc.redirect(toUrl.toString())
                 return
             }
+
+            viewPath.url.isEmpty() -> return
+
             else -> {
                 viewPath.forEach {
                     rc.setAttribute(it.key, it.value)

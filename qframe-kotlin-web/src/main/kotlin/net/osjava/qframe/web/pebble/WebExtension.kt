@@ -8,6 +8,7 @@ class WebExtension : AbstractExtension() {
     override fun getFunctions(): Map<String, Function> {
         val functions = mutableMapOf<String, Function>()
         functions[FUN_PATH_NAME] = PathFunction()
+        functions[EnvFunction.FunName] = EnvFunction()
 
         return functions
     }

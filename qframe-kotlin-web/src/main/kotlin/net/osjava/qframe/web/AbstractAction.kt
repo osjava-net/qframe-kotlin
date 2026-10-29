@@ -20,17 +20,17 @@ interface AbstractAction {
 
         if (method == null) {
             rc.errorNotFound()
-            return IResult.notion()
+            return IResult.nothing()
         }
 
         val apiSecurity = method.getAnnotation(ApiSecurity::class.java)
         if (apiSecurity != null) {
             val apiBean = BeanFactory.getBean(apiSecurity.bean, IApiSecurity::class) ?: kotlin.run {
                 rc.errorForbidden()
-                return IResult.notion()
+                return IResult.nothing()
             }
             val result = apiBean.validate(rc, apiSecurity)
-            if (result !is ResultNoting) {
+            if (result !is ResultNothing) {
                 return result
             }
         }

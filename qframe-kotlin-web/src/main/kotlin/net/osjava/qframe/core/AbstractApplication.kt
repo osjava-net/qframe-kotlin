@@ -29,7 +29,7 @@ abstract class AbstractApplication {
         log.info("Destroy application ${AppConfig.appId}... DONE")
     }
 
-    protected fun getSpringContexts():List<String> {
+    protected open fun getSpringContexts():List<String> {
         return listOf("classpath*:/META-INF/spring-beans.xml")
     }
 }

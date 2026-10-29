@@ -61,7 +61,7 @@ class RequestContext(var request: HttpServletRequest, var response: HttpServletR
     }
 
     inline fun <reified T : Any> getAttribute(key: String): T? {
-        return request.getAttribute(key) as T
+        return request.getAttribute(key) as? T
     }
 
     internal fun setFile(key: String, value: String) {
@@ -267,7 +267,7 @@ class RequestContext(var request: HttpServletRequest, var response: HttpServletR
                 val ipc = ips[2].toInt()
                 val ipd = ips[3].toInt()
                 ipa in 0..255 && ipb >= 0 && ipb <= 255 && ipc >= 0 && ipc <= 255 && ipd >= 0 && ipd <= 255
-            } catch (e: Exception) { // Ignore Exception, if throw exception, this method would be return FALSE.
+            } catch (e: Exception) { // Ignore Exception; if an exception, this method would return FALSE.
                 false
             }
         }

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class ActionServlet : HttpServlet() {
-    private val log = LoggerFactory.getLogger(ActionServlet::class.java.enclosingClass)
+    private val log = LoggerFactory.getLogger(ActionServlet::class.java)
 
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
         doService(req)

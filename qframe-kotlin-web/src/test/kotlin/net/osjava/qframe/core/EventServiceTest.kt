@@ -17,6 +17,7 @@ internal class EventServiceTest {
         }
 
         eventService.dispatchEvent(EventTestData("123"))
+        println("Dispatch an event: 123")
         Thread.sleep(5000)
     }
 }
